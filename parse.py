@@ -5,9 +5,8 @@ from config import USER_AGENT
 
 class Handler(object):
     ''' Get movies '''
-    def __init__(self, url, payload):
+    def __init__(self, url):
         self.url = url
-        self.payload = payload
         self.header = self._random_header_()
         self.content = self._get_content_()
         self.movie = self._get_movie_()
@@ -32,7 +31,7 @@ class Handler(object):
         if self.url is None:
             return None
         try:
-            response = requests.get(self.url + self.payload, headers=self.header)
+            response = requests.get(self.url, headers=self.header)
         except Exception as e:
             print("Fail to open the url, error: {0}".format(e))
             return None
@@ -54,7 +53,7 @@ class Handler(object):
         # get title and image
         picture = soup.find('div', attrs={'class': 'posterPic'}).find('img')
         title, image = picture.get('alt'), picture.get('src')
-
+        # get year, area, score, label, director and actor
         tmp = soup.find('em', text='上映年代：')
         if tmp:
             year = str(self._parse_text_(tmp.parent))
@@ -85,11 +84,13 @@ class Handler(object):
             actor = self._parse_text_(tmp.parent)
         else:
             actor = ''
+        # get imdb
         tmp = soup.find('em', text='IMDB：')
         if tmp:
             imdb = self._parse_text_(tmp.parent)
         else:
             imdb = ''
+        # get introduction
         intro = soup.find_all('div', attrs={'class':'pSummary globalPadding'})[-1].get_text()
 
         # get thunder and magnet

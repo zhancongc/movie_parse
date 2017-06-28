@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Table, Column, Integer, String, Unicode, UnicodeText
-from sqlalchemy import select, and_, or_, asc, desc
+from sqlalchemy.orm import sessionmaker
 from config import SQLALCHEMY_DATABASE_URI
 
 Base = declarative_base()
@@ -35,26 +35,35 @@ class Operate(object):
         return session
 
     def __init_db__(self):
-        Base.metadata.bind = self.engine
-        Base.metadata.create_all()
+        try:
+            Base.metadata.bind = self.engine
+            Base.metadata.create_all()
+        except Exception as error:
+            print("ERROR: {error}".format(error))
 
     def insert(self, movie):
-        obj = Movies(
-            url = movie['url'],
-            title = movie['title'],
-            img = movie['img'],
-            year = movie['year'],
-            area = movie['area'],
-            score = movie['score'],
-            label = movie['label'],
-            director = movie['director'],
-            actor = movie['actor'],
-            imdb = movie['imdb'],
-            introduction = movie['introduction'],
-            thunder = movie['thunder'],
-            magnet = movie['magnet']
-        )
-        self.session.add(obj)
-        self.session.flush()
-        self.session.commit()
+        try:
+            obj = Movies(
+                url = movie['url'],
+                title = movie['title'],
+                img = movie['img'],
+                year = movie['year'],
+                area = movie['area'],
+                score = movie['score'],
+                label = movie['label'],
+                director = movie['director'],
+                actor = movie['actor'],
+                imdb = movie['imdb'],
+                introduction = movie['introduction'],
+                thunder = movie['thunder'],
+                magnet = movie['magnet']
+            )
+        except Exception as error:
+            print('ERROR: {error}'.format(error = error))
+        try:
+            self.session.add(obj)
+            self.session.flush()
+            self.session.commit()
+        except Exception as e:
+            print('ERROR: {error}'.format(error = error))
 
