@@ -8,7 +8,7 @@ base_url = BASE_URL
 movie_list = []
 
 # 该网站目前最大的电影序号为23576
-for i in range(21022, 21024):
+for i in range(1, 23577):
     payload = (str(i) + '.html')
     try:
         page = Handler(base_url + payload)
