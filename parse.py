@@ -42,7 +42,7 @@ class Handler(object):
         return response.text
 
     @staticmethod
-    def _parse_text_(obj):
+    def _text_clear_(obj):
         obj.em.clear()
         return obj.get_text()
 
@@ -60,38 +60,38 @@ class Handler(object):
         # get year, area, score, label, director and actor
         tmp = soup.find('em', text='上映年代：')
         if tmp:
-            year = str(self._parse_text_(tmp.parent))
+            year = str(self._text_clear_(tmp.parent))
         else:
             year = ''
         tmp = soup.find('em', text='地区：')
         if tmp:
-            area = self._parse_text_(tmp.parent)
+            area = self._text_clear_(tmp.parent)
         else:
             area = ''
         tmp = soup.find('em', text='评分：')
         if tmp:
-            score = str(self._parse_text_(tmp.parent)[:-1])
+            score = str(self._text_clear_(tmp.parent)[:-1])
         else:
             score = ''
         tmp = soup.find('em', text='类型：')
         if tmp:
-            label = self._parse_text_(tmp.parent)
+            label = self._text_clear_(tmp.parent)
         else:
             label = ''
         tmp = soup.find('em', text='导演：')
         if tmp:
-            director = self._parse_text_(tmp.parent)
+            director = self._text_clear_(tmp.parent)
         else:
             director = ''
         tmp = soup.find('em', text='主演：')
         if tmp:
-            actor = self._parse_text_(tmp.parent)
+            actor = self._text_clear_(tmp.parent)
         else:
             actor = ''
         # get imdb
         tmp = soup.find('em', text='IMDB：')
         if tmp:
-            imdb = self._parse_text_(tmp.parent)
+            imdb = self._text_clear_(tmp.parent)
         else:
             imdb = ''
         # get introduction
