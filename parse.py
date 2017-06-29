@@ -8,7 +8,7 @@ class Handler(object):
     def __init__(self, url):
         self.url = url
         self.header = self._random_header_()
-        self.content = self._get_content_()
+        self.text = self._get_text_()
         self.movie = self._get_movie_()
 
     @staticmethod
@@ -26,19 +26,20 @@ class Handler(object):
         }
         return header
 
-    def _get_content_(self):
-        ''' get html content which contains movies' data '''
+    def _get_text_(self):
+        ''' get html text which contains movies' data '''
         if self.url is None:
             return None
         try:
             response = requests.get(self.url, headers=self.header)
-        except Exception as e:
-            print("Fail to open the url, error: {0}".format(e))
+        except Exception as error:
+            print("Fail to open the url, error: {0}".format(error))
             return None
         self.status_code = response.status_code
         if response.status_code != 200:
             return None
-        return response.content
+        response.encoding = 'gbk'
+        return response.text
 
     @staticmethod
     def _parse_text_(obj):
@@ -46,13 +47,16 @@ class Handler(object):
         return obj.get_text()
 
     def _get_movie_(self):
-        ''' extract html content and movies' data will be in a list '''
-        if self.content == None:
+        ''' extract html and movies' data will be in a list '''
+        if self.text == None:
             return None
-        soup = BS(self.content, 'lxml', from_encoding='gb2312')
+        soup = BS(self.text, 'lxml')
         # get title and image
         picture = soup.find('div', attrs={'class': 'posterPic'}).find('img')
-        title, image = picture.get('alt'), picture.get('src')
+        if picture:
+            title, image = picture.get('alt'), picture.get('src')
+        else:
+            title, image = '', ''
         # get year, area, score, label, director and actor
         tmp = soup.find('em', text='上映年代：')
         if tmp:
@@ -91,8 +95,11 @@ class Handler(object):
         else:
             imdb = ''
         # get introduction
-        intro = soup.find_all('div', attrs={'class':'pSummary globalPadding'})[-1].get_text()
-
+        temp = soup.find_all('div', attrs={'class':'pSummary globalPadding'})
+        if temp:
+            intro = temp[-1].get_text()
+        else:
+            intro = ''
         # get thunder and magnet
         uls = soup.find_all('ul', attrs={'class': 'dramaNumList dramaNumList3 clearfix'})
         if len(uls) == 2:

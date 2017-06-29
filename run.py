@@ -5,26 +5,26 @@ from config import BASE_URL
 
 # get movie data
 base_url = BASE_URL
-movie_list = []
+operate = Operate()
 
 # 该网站目前最大的电影序号为23576
-for i in range(1, 23577):
+for i in range(2, 23577):
+    print(i)
     payload = (str(i) + '.html')
     try:
         page = Handler(base_url + payload)
-        movie_list.append(page.movie)
-    except Exception as e:
+    except Exception as error:
         print('url: ' + base_url + payload)
-        print('error: {error}'.format(error = error))
-
+        print('error: {0}'.format(error))
+        # 主动销毁error变量
+        del error
+    if page.movie:
+        try:
+            operate.insert(page.movie)
+        except Exception as error:
+            print("ERROR： {0}".format(error))
+            del error
+    # 主动销毁page对象
+    del page
 print('Get movie successfully!')
 
-# insert into database
-operate = Operate()
-for i in movie_list:
-    try:
-    	operate.insert(i)
-    except Exception as error:
-        print("ERROR： {error}".format(error = error))
-
-print("Insert movies'data to mysql successfully!")

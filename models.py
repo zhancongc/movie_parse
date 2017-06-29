@@ -13,15 +13,15 @@ class Movies(Base):
     title = Column('title', UnicodeText())
     img = Column('img', String(128))
     year = Column('year', Integer())
-    area = Column('area', Unicode(128))
-    score = Column('score', Integer)
-    label = Column('label', Unicode(128))
-    director = Column('director', Unicode(128))
+    area = Column('area', Unicode(16))
+    score = Column('score', Integer())
+    label = Column('label', Unicode(64))
+    director = Column('director', Unicode(64))
     actor = Column('actor', Unicode(128))
-    imdb = Column('imdb', String(128))
+    imdb = Column('imdb', String(16))
     introduction = Column('introduction', UnicodeText())
-    thunder = Column('thunder', String(256))
-    magnet = Column('magnet', String(256))
+    thunder = Column('thunder', UnicodeText())
+    magnet = Column('magnet', UnicodeText())
 
 class Operate(object):
     def __init__(self):
@@ -39,7 +39,7 @@ class Operate(object):
             Base.metadata.bind = self.engine
             Base.metadata.create_all()
         except Exception as error:
-            print("ERROR: {error}".format(error))
+            print("ERROR: {0}".format(error))
 
     def insert(self, movie):
         try:
@@ -59,11 +59,11 @@ class Operate(object):
                 magnet = movie['magnet']
             )
         except Exception as error:
-            print('ERROR: {error}'.format(error = error))
+            print('ERROR: {0}'.format(error))
         try:
             self.session.add(obj)
             self.session.flush()
             self.session.commit()
-        except Exception as e:
-            print('ERROR: {error}'.format(error = error))
+        except Exception as error:
+            print('ERROR: {0}'.format(error))
 
